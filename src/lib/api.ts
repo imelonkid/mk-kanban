@@ -1,10 +1,27 @@
 import { Service, ServiceFormData } from '@/types';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+// 获取当前主机名和协议
+const getBaseUrl = () => {
+  if (typeof window !== 'undefined') {
+    // 浏览器环境
+    const protocol = window.location.protocol;
+    const hostname = window.location.hostname;
+    const backendPort = process.env.NEXT_PUBLIC_BACKEND_PORT || '3001';
+    return `${protocol}//${hostname}:${backendPort}/api`;
+  }
+  // 服务器端渲染环境
+  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+};
+
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || getBaseUrl();
+
+// 添加调试日志
+console.log('API基础URL:', API_BASE_URL);
 
 // 获取所有服务
 export const getServicesApi = async (): Promise<Service[]> => {
   try {
+    console.log('请求API:', `${API_BASE_URL}/services`);
     const response = await fetch(`${API_BASE_URL}/services`);
     if (!response.ok) {
       throw new Error(`API错误: ${response.status}`);
