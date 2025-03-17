@@ -5,21 +5,21 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const servicesRouter = require('./routes/services');
 
+// 加载环境变量 - 指定路径
+require('dotenv').config({ path: path.resolve(__dirname, '../../.env') });
+console.log('尝试加载环境变量，当前目录:', __dirname);
+console.log('环境变量加载状态:', process.env.NEXT_PUBLIC_API_URL ? '成功' : '失败');
+
 // 创建Express应用
 const app = express();
 const PORT = process.env.BACKEND_PORT || process.env.PORT || 3001;
 
-// 动态拼接前端域名和端口
-const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost';
-const FRONTEND_PORT = process.env.FRONTEND_PORT || 3000;
-const ALLOWED_ORIGIN = `${FRONTEND_URL}:${FRONTEND_PORT}`;
-
-// 改进的CORS配置
+// 简化CORS配置 - 允许所有来源
 app.use(cors({
-  origin: ALLOWED_ORIGIN, // 允许的前端域名
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'], // 允许的HTTP方法
-  allowedHeaders: ['Content-Type'], // 允许的请求头
-  credentials: true // 允许跨域请求携带凭据
+  origin: '*', // 允许所有来源
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type'],
+  credentials: true
 }));
 
 // 其他中间件
@@ -54,4 +54,5 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`服务器运行在 http://0.0.0.0:${PORT}`);
   console.log(`API可在 http://0.0.0.0:${PORT}/api/services 访问`);
   console.log(`已启用CORS，允许所有跨域请求`);
+  console.log(`环境变量: BACKEND_PORT=${process.env.BACKEND_PORT}, PORT=${process.env.FRONTEND_PORT}`);
 }); 
