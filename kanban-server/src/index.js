@@ -14,13 +14,17 @@ console.log('环境变量加载状态:', process.env.NEXT_PUBLIC_API_URL ? '成�
 const app = express();
 const PORT = process.env.BACKEND_PORT || process.env.PORT || 3001;
 
+const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost';
+console.log(`容许访问的前端地址 ${FRONTEND_URL}`);
+
 // 简化CORS配置 - 允许所有来源
 app.use(cors({
-  origin: '*', // 允许所有来源
+  origin: FRONTEND_URL, // 允许所有来源
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
   allowedHeaders: ['Content-Type'],
   credentials: true
 }));
+
 
 // 其他中间件
 app.use(morgan('dev'));
