@@ -7,12 +7,15 @@ const getBaseUrl = () => {
     const protocol = window.location.protocol;
     const hostname = window.location.hostname;
     const backendPort = process.env.NEXT_PUBLIC_BACKEND_PORT || '3001';
+    
+    // 使用相同的主机名，但使用后端端口
     return `${protocol}//${hostname}:${backendPort}/api`;
   }
   // 服务器端渲染环境
-  return process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api';
+  return 'http://localhost:3001/api';
 };
 
+// 优先使用环境变量中的API_URL，如果没有则动态生成
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || getBaseUrl();
 
 // 添加调试日志
@@ -22,7 +25,14 @@ console.log('API基础URL:', API_BASE_URL);
 export const getServicesApi = async (): Promise<Service[]> => {
   try {
     console.log('请求API:', `${API_BASE_URL}/services`);
-    const response = await fetch(`${API_BASE_URL}/services`);
+    const response = await fetch(`${API_BASE_URL}/services`, {
+      // 添加缓存控制和凭证选项
+      cache: 'no-cache',
+      credentials: 'same-origin',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
     if (!response.ok) {
       throw new Error(`API错误: ${response.status}`);
     }
