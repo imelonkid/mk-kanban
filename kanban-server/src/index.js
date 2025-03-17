@@ -9,24 +9,18 @@ const servicesRouter = require('./routes/services');
 const app = express();
 const PORT = process.env.BACKEND_PORT || process.env.PORT || 3001;
 
-// 最简单的CORS配置 - 在所有路由之前
-app.use(cors());
+// 动态拼接前端域名和端口
+const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost';
+const FRONTEND_PORT = process.env.FRONTEND_PORT || 3000;
+const ALLOWED_ORIGIN = `${FRONTEND_URL}:${FRONTEND_PORT}`;
 
-// 预检请求处理
-app.options('*', (req, res) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
-  res.sendStatus(200);
-});
-
-// 为每个请求添加CORS头
-app.use((req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Methods', 'GET,PUT,POST,DELETE,PATCH,OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization, Content-Length, X-Requested-With');
-  next();
-});
+// 改进的CORS配置
+app.use(cors({
+  origin: ALLOWED_ORIGIN, // 允许的前端域名
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'], // 允许的HTTP方法
+  allowedHeaders: ['Content-Type'], // 允许的请求头
+  credentials: true // 允许跨域请求携带凭据
+}));
 
 // 其他中间件
 app.use(morgan('dev'));
