@@ -15,6 +15,7 @@ const logOperation = async (operation, details) => {
   try {
     await fs.appendFile(LOG_FILE, logEntry);
     console.log(`日志已记录: ${operation}`);
+    
   } catch (error) {
     console.error('记录日志失败:', error);
   }
