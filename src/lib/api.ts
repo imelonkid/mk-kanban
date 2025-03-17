@@ -1,22 +1,8 @@
 import { Service, ServiceFormData } from '@/types';
+import config from '@/config';
 
-// 获取当前主机名和协议
-const getBaseUrl = () => {
-  if (typeof window !== 'undefined') {
-    // 浏览器环境
-    const protocol = window.location.protocol;
-    const hostname = window.location.hostname;
-    const backendPort = process.env.NEXT_PUBLIC_BACKEND_PORT || '3001';
-    
-    // 使用相同的主机名，但使用后端端口
-    return `${protocol}//${hostname}:${backendPort}/api`;
-  }
-  // 服务器端渲染环境
-  return 'http://localhost:3001/api';
-};
-
-// 优先使用环境变量中的API_URL，如果没有则动态生成
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || getBaseUrl();
+// API基础URL从配置中获取
+const API_BASE_URL = config.apiBaseUrl;
 
 // 添加调试日志
 console.log('API基础URL:', API_BASE_URL);
