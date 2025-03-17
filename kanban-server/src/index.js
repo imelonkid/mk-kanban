@@ -14,7 +14,7 @@ console.log('环境变量加载状态:', process.env.NEXT_PUBLIC_API_URL ? '成�
 const app = express();
 const PORT = process.env.BACKEND_PORT || process.env.PORT || 3001;
 
-const FRONTEND_URL = `http://${SERVER_IP}:${FRONTEND_PORT}`;
+const FRONTEND_URL = `http://${process.env.SERVER_IP}:${process.env.FRONTEND_PORT}`;
 console.log(`容许访问的前端地址 ${FRONTEND_URL}`);
 
 // 简化CORS配置 - 允许所有来源
