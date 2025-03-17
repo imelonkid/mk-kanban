@@ -1,0 +1,24 @@
+[
+  {
+    "name": "mktest",
+    "description": "mktest",
+    "url": "http://localhost:3000/",
+    "status": "online",
+    "icon": "",
+    "category": "",
+    "id": "77813e21-ffbd-4eaa-a464-3a7056ef21f5",
+    "createdAt": "2025-03-17T05:24:49.298Z",
+    "updatedAt": "2025-03-17T05:24:49.298Z"
+  },
+  {
+    "name": "mktest1",
+    "description": "http://localhost:3000/",
+    "url": "http://localhost:3000/",
+    "status": "maintenance",
+    "icon": "",
+    "category": "",
+    "id": "d45dc9a7-ac1d-4640-87bf-b5b40e6cce51",
+    "createdAt": "2025-03-17T05:25:15.416Z",
+    "updatedAt": "2025-03-17T05:25:24.446Z"
+  }
+]
