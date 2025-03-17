@@ -6,7 +6,7 @@ export const getApiBaseUrl = (): string => {
     // 浏览器环境
     const protocol = window.location.protocol;
     const hostname = window.location.hostname;
-    const backendPort = process.env.BACKEND_PORT; // 后端端口
+    const backendPort = '3001'; // 固定后端端口
     
     // 使用当前主机名，但使用后端端口
     return `${protocol}//${hostname}:${backendPort}/api`;
@@ -18,7 +18,7 @@ export const getApiBaseUrl = (): string => {
 
 // 导出配置
 const config = {
-  apiBaseUrl: getApiBaseUrl(),
+  apiBaseUrl: typeof window !== 'undefined' ? getApiBaseUrl() : (process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001/api'),
 };
 
 export default config; 

@@ -10,11 +10,13 @@ import ServiceForm from '@/components/ServiceForm';
 import Navbar from '@/components/Navbar';
 import { getServiceApi, updateServiceApi, deleteServiceApi } from '@/lib/api';
 
-interface ServiceDetailPageProps {
+// 修改类型定义，使其符合Next.js的要求
+type ServiceDetailPageProps = {
   params: {
     id: string;
   };
-}
+  searchParams?: Record<string, string | string[] | undefined>;
+};
 
 export default function ServiceDetailPage({ params }: ServiceDetailPageProps) {
   const { id } = params;
