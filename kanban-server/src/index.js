@@ -7,7 +7,7 @@ const servicesRouter = require('./routes/services');
 
 // 创建Express应用
 const app = express();
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.BACKEND_PORT || process.env.PORT || 3001;
 
 // 中间件
 app.use(cors());

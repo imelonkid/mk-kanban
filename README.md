@@ -93,6 +93,20 @@ chmod +x start.sh stop.sh status.sh
 
 这些脚本会在后台运行服务，并将日志保存在`logs/`目录中。
 
+#### CentOS/RHEL系统
+
+如果您使用的是CentOS或RHEL系统，可能需要安装一些额外的依赖。我们提供了一个安装脚本：
+
+```bash
+# 添加执行权限
+chmod +x install-deps.sh
+
+# 使用root权限运行安装脚本
+sudo ./install-deps.sh
+```
+
+这个脚本会安装必要的工具（如lsof、curl等）和Node.js环境，并设置项目依赖。
+
 #### 开发环境
 
 1. 启动后端服务
@@ -137,11 +151,38 @@ npm run start
 
 ### 环境变量配置
 
-前端项目可以通过创建`.env.local`文件来配置环境变量：
+项目支持通过环境变量配置前端和后端端口。您可以通过创建`.env`文件来配置环境变量：
+
+```bash
+# 复制示例配置文件
+cp .env.example .env
+
+# 编辑配置文件
+nano .env
+```
+
+可配置的环境变量包括：
 
 ```
-# API基础URL，默认为http://localhost:3001/api
-NEXT_PUBLIC_API_URL=http://your-api-url.com/api
+# 前端端口配置
+PORT=3000
+
+# 后端端口配置
+BACKEND_PORT=3001
+
+# API基础URL
+NEXT_PUBLIC_API_URL=http://localhost:3001/api
+```
+
+如果您使用启动脚本，这些环境变量会自动被加载。如果您手动启动服务，可以这样使用环境变量：
+
+```bash
+# 启动前端服务
+PORT=8000 npm run dev
+
+# 启动后端服务
+cd kanban-server
+BACKEND_PORT=8001 npm run dev
 ```
 
 ## API 接口
