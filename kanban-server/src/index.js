@@ -9,14 +9,22 @@ const servicesRouter = require('./routes/services');
 const app = express();
 const PORT = process.env.BACKEND_PORT || process.env.PORT || 3001;
 
-// 中间件
-app.use(cors({
-  origin: '*', // 允许所有来源的请求
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-  credentials: true,
-  exposedHeaders: ['Content-Length', 'Content-Type']
-}));
+// 设置CORS中间件 - 允许所有跨域请求
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  
+  // 对于OPTIONS请求直接返回200
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+  
+  next();
+});
+
+// 其他中间件
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -43,11 +51,9 @@ app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
 
-// 添加OPTIONS请求处理
-app.options('*', cors());
-
 // 启动服务器
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`服务器运行在 http://0.0.0.0:${PORT}`);
   console.log(`API可在 http://0.0.0.0:${PORT}/api/services 访问`);
+  console.log(`已启用CORS，允许所有跨域请求`);
 }); 
