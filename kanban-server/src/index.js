@@ -10,7 +10,13 @@ const app = express();
 const PORT = process.env.BACKEND_PORT || process.env.PORT || 3001;
 
 // 中间件
-app.use(cors());
+app.use(cors({
+  origin: '*', // 允许所有来源的请求
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+  exposedHeaders: ['Content-Length', 'Content-Type']
+}));
 app.use(morgan('dev'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -36,6 +42,9 @@ app.get('/api', (req, res) => {
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
 });
+
+// 添加OPTIONS请求处理
+app.options('*', cors());
 
 // 启动服务器
 app.listen(PORT, '0.0.0.0', () => {
