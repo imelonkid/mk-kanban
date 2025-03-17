@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { FiActivity, FiPlus } from 'react-icons/fi';
+import { FiActivity, FiPlus, FiPieChart } from 'react-icons/fi';
 
 const Header: React.FC<{ title: string }> = ({ title }) => {
   const pathname = usePathname();
@@ -10,7 +10,13 @@ const Header: React.FC<{ title: string }> = ({ title }) => {
     <header className="bg-white dark:bg-gray-800 shadow">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
         <div className="flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{title}</h1>
+          <div className="flex items-center">
+            <Link href="/" className="focus:outline-none">
+              <h1 className="text-4xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-purple-600 dark:from-blue-400 dark:to-purple-500 hover:from-blue-600 hover:to-purple-700 dark:hover:from-blue-500 dark:hover:to-purple-600 transition-all duration-300 transform hover:scale-105 select-none">
+                Papaya
+              </h1>
+            </Link>
+          </div>
           
           <div className="hidden sm:flex space-x-4">
             <Link 
@@ -25,6 +31,20 @@ const Header: React.FC<{ title: string }> = ({ title }) => {
             </Link>
             
             <Link 
+              href="/dashboard" 
+              className={`px-3 py-2 rounded-md text-sm font-medium ${
+                pathname === '/dashboard' 
+                  ? 'bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-200' 
+                  : 'text-gray-600 hover:bg-gray-100 dark:text-gray-300 dark:hover:bg-gray-700'
+              }`}
+            >
+              <span className="flex items-center">
+                <FiPieChart className="mr-1" />
+                数据
+              </span>
+            </Link>
+            
+            <Link 
               href="/status" 
               className={`px-3 py-2 rounded-md text-sm font-medium ${
                 pathname === '/status' 
@@ -34,7 +54,7 @@ const Header: React.FC<{ title: string }> = ({ title }) => {
             >
               <span className="flex items-center">
                 <FiActivity className="mr-1" />
-                状态
+                监控
               </span>
             </Link>
             

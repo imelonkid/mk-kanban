@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Service } from '@/types';
-import { FiExternalLink, FiEdit, FiTrash2, FiInfo } from 'react-icons/fi';
+import { FiExternalLink, FiEdit, FiTrash2, FiInfo, FiServer, FiDatabase, FiGlobe, FiMonitor, FiCloud, FiMail, FiFileText, FiCalendar, FiShield, FiTool } from 'react-icons/fi';
 
 interface ServiceCardProps {
   service: Service;
@@ -10,19 +10,108 @@ interface ServiceCardProps {
 }
 
 const ServiceCard: React.FC<ServiceCardProps> = ({ service, onEdit, onDelete }) => {
+  const [faviconUrl, setFaviconUrl] = useState<string | null>(null);
+  const [faviconError, setFaviconError] = useState(false);
+
   const statusColors = {
     online: 'bg-green-500',
     offline: 'bg-red-500',
     maintenance: 'bg-yellow-500'
   };
 
+  // 预设图标映射
+  const iconMap = {
+    server: <FiServer size={24} className="text-blue-500" />,
+    database: <FiDatabase size={24} className="text-blue-500" />,
+    globe: <FiGlobe size={24} className="text-blue-500" />,
+    monitor: <FiMonitor size={24} className="text-blue-500" />,
+    cloud: <FiCloud size={24} className="text-blue-500" />,
+    mail: <FiMail size={24} className="text-blue-500" />,
+    file: <FiFileText size={24} className="text-blue-500" />,
+    calendar: <FiCalendar size={24} className="text-blue-500" />,
+    shield: <FiShield size={24} className="text-blue-500" />,
+    tool: <FiTool size={24} className="text-blue-500" />,
+  };
+
+  // 尝试获取网站的favicon
+  useEffect(() => {
+    if (!service.icon && !faviconError) {
+      try {
+        // 从URL中提取域名
+        const url = new URL(service.url);
+        const domain = url.hostname;
+        
+        // 尝试获取favicon
+        const faviconUrl = `https://${domain}/favicon.ico`;
+        
+        // 创建一个Image对象来检查favicon是否存在
+        const img = new Image();
+        img.onload = () => {
+          setFaviconUrl(faviconUrl);
+        };
+        img.onerror = () => {
+          // 如果直接的favicon.ico不存在，尝试使用Google的favicon服务
+          const googleFaviconUrl = `https://www.google.com/s2/favicons?domain=${domain}`;
+          setFaviconUrl(googleFaviconUrl);
+        };
+        img.src = faviconUrl;
+      } catch (error) {
+        console.error('获取favicon失败:', error);
+        setFaviconError(true);
+      }
+    }
+  }, [service.url, service.icon, faviconError]);
+
+  // 获取服务图标
+  const getServiceIcon = () => {
+    // 如果有自定义图标，优先使用
+    if (service.icon) {
+      if (service.icon.startsWith('http')) {
+        // 如果是URL，显示图片
+        return (
+          <img 
+            src={service.icon} 
+            alt={`${service.name} 图标`} 
+            className="w-8 h-8 object-contain mr-3"
+            onError={() => setFaviconError(true)}
+          />
+        );
+      } else {
+        // 如果是预设图标名称
+        return (
+          <div className="mr-3">
+            {iconMap[service.icon as keyof typeof iconMap] || <FiServer size={24} className="text-blue-500" />}
+          </div>
+        );
+      }
+    }
+    
+    // 如果没有自定义图标但成功获取了favicon
+    if (faviconUrl) {
+      return (
+        <img 
+          src={faviconUrl} 
+          alt={`${service.name} 图标`} 
+          className="w-8 h-8 object-contain mr-3"
+          onError={() => setFaviconError(true)}
+        />
+      );
+    }
+    
+    // 默认图标
+    return <FiServer size={24} className="text-blue-500 mr-3" />;
+  };
+
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md overflow-hidden transition-all hover:shadow-lg">
       <div className="p-5">
         <div className="flex justify-between items-start mb-3">
-          <Link href={`/services/${service.id}`} className="hover:underline">
-            <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{service.name}</h3>
-          </Link>
+          <div className="flex items-center">
+            {getServiceIcon()}
+            <Link href={`/services/${service.id}`} className="hover:underline">
+              <h3 className="text-lg font-semibold text-gray-900 dark:text-white">{service.name}</h3>
+            </Link>
+          </div>
           <div className="flex items-center">
             <span className={`inline-block w-3 h-3 rounded-full mr-2 ${statusColors[service.status]}`}></span>
             <span className="text-sm text-gray-600 dark:text-gray-300 capitalize">{service.status}</span>

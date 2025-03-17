@@ -1,7 +1,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { FiHome, FiActivity, FiPlus } from 'react-icons/fi';
+import { FiHome, FiActivity, FiPieChart } from 'react-icons/fi';
 
 const Navbar: React.FC = () => {
   const pathname = usePathname();
@@ -24,13 +24,23 @@ const Navbar: React.FC = () => {
         </Link>
         
         <Link 
+          href="/dashboard" 
+          className={`flex flex-col items-center justify-center w-full h-full ${
+            isActive('/dashboard') ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-400'
+          }`}
+        >
+          <FiPieChart size={20} />
+          <span className="text-xs mt-1">数据</span>
+        </Link>
+        
+        <Link 
           href="/status" 
           className={`flex flex-col items-center justify-center w-full h-full ${
             isActive('/status') ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-400'
           }`}
         >
           <FiActivity size={20} />
-          <span className="text-xs mt-1">状态</span>
+          <span className="text-xs mt-1">监控</span>
         </Link>
       </div>
     </nav>

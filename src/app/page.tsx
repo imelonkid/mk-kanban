@@ -1,10 +1,12 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { FiPlus, FiFilter, FiSearch } from 'react-icons/fi';
+import { FiPlus, FiFilter, FiSearch, FiActivity, FiTag } from 'react-icons/fi';
 import { Service, ServiceFormData } from '@/types';
 import ServiceCard from '@/components/ServiceCard';
 import ServiceForm from '@/components/ServiceForm';
+import ServiceDashboard from '@/components/ServiceDashboard';
+import CustomDropdown from '@/components/CustomDropdown';
 import Modal from '@/components/Modal';
 import Header from '@/components/Header';
 import Navbar from '@/components/Navbar';
@@ -152,24 +154,13 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pb-16 sm:pb-0">
-      <Header title="个人服务看板" />
+      <Header title="Papaya" />
       
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {error && (
-          <div className="mb-4 bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-            <span className="block sm:inline">{error}</span>
-            <span className="absolute top-0 bottom-0 right-0 px-4 py-3" onClick={() => setError(null)}>
-              <svg className="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
-                <title>关闭</title>
-                <path d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/>
-              </svg>
-            </span>
-          </div>
-        )}
-        
-        {/* 搜索和过滤 */}
-        <div className="mb-8 flex flex-col sm:flex-row gap-4">
-          <div className="relative flex-1">
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div className="flex flex-col sm:flex-row justify-between items-center mb-6">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">服务总览</h1>
+          
+          <div className="relative mt-3 sm:mt-0 w-full sm:w-64">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <FiSearch className="text-gray-400" />
             </div>
@@ -181,43 +172,43 @@ export default function Home() {
               className="block w-full pl-10 pr-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white"
             />
           </div>
-          
-          <div className="flex gap-4">
-            <div className="relative">
-              <select
-                value={categoryFilter}
-                onChange={(e) => setCategoryFilter(e.target.value)}
-                className="block w-full pl-3 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white appearance-none"
-              >
-                <option value="">所有分类</option>
-                {categories.map(category => (
-                  <option key={category} value={category}>{category}</option>
-                ))}
-              </select>
-              <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                <FiFilter className="text-gray-400" />
-              </div>
-            </div>
+        </div>
+        
+        {/* 服务状态大盘 */}
+        <ServiceDashboard services={services} />
+        
+        {/* 筛选 */}
+        <div className="mb-6">
+          <div className="flex flex-wrap gap-4 items-center">
+            <div className="font-medium text-gray-700 dark:text-gray-300">筛选：</div>
             
-            <div className="relative">
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="block w-full pl-3 pr-10 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white appearance-none"
-              >
-                <option value="">所有状态</option>
-                <option value="online">在线</option>
-                <option value="offline">离线</option>
-                <option value="maintenance">维护中</option>
-              </select>
-              <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                <FiFilter className="text-gray-400" />
-              </div>
-            </div>
+            <CustomDropdown
+              options={[
+                { value: '', label: '所有分类' },
+                ...categories.map(category => ({ value: category || '', label: category || '' }))
+              ]}
+              value={categoryFilter}
+              onChange={setCategoryFilter}
+              icon={<FiTag />}
+              className="w-40"
+            />
+            
+            <CustomDropdown
+              options={[
+                { value: '', label: '所有状态' },
+                { value: 'online', label: '在线' },
+                { value: 'offline', label: '离线' },
+                { value: 'maintenance', label: '维护中' }
+              ]}
+              value={statusFilter}
+              onChange={setStatusFilter}
+              icon={<FiActivity />}
+              className="w-40"
+            />
             
             <button
               onClick={openAddModal}
-              className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:hidden"
+              className="inline-flex items-center ml-auto px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:hidden"
             >
               <FiPlus className="mr-2" />
               添加服务

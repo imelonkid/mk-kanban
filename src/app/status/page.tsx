@@ -2,10 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { FiExternalLink } from 'react-icons/fi';
+import { FiExternalLink, FiActivity } from 'react-icons/fi';
 import { Service } from '@/types';
 import Header from '@/components/Header';
 import Navbar from '@/components/Navbar';
+import CustomDropdown from '@/components/CustomDropdown';
 import { getServicesApi, updateServiceStatusApi } from '@/lib/api';
 
 export default function StatusPage() {
@@ -78,7 +79,7 @@ export default function StatusPage() {
   
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pb-16 sm:pb-0">
-      <Header title="服务状态" />
+      <Header title="服务运行状态" />
       
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {error && (
@@ -138,15 +139,17 @@ export default function StatusPage() {
                               <div className="h-5 w-16 bg-gray-200 dark:bg-gray-700 rounded"></div>
                             </div>
                           ) : (
-                            <select
+                            <CustomDropdown
+                              options={[
+                                { value: 'online', label: '在线' },
+                                { value: 'offline', label: '离线' },
+                                { value: 'maintenance', label: '维护中' }
+                              ]}
                               value={service.status}
-                              onChange={(e) => handleStatusChange(service.id, e.target.value as Service['status'])}
-                              className="text-sm text-gray-700 dark:text-gray-300 bg-transparent border border-gray-300 dark:border-gray-600 rounded-md px-2 py-1"
-                            >
-                              <option value="online">在线</option>
-                              <option value="offline">离线</option>
-                              <option value="maintenance">维护中</option>
-                            </select>
+                              onChange={(value) => handleStatusChange(service.id, value as Service['status'])}
+                              icon={<FiActivity />}
+                              className="w-32"
+                            />
                           )}
                         </div>
                       </td>

@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { FiArrowLeft, FiExternalLink, FiEdit, FiTrash2 } from 'react-icons/fi';
+import { FiArrowLeft, FiExternalLink, FiEdit, FiTrash2, FiServer, FiDatabase, FiGlobe, FiMonitor, FiCloud, FiMail, FiFileText, FiCalendar, FiShield, FiTool } from 'react-icons/fi';
 import { Service, ServiceFormData } from '@/types';
 import Modal from '@/components/Modal';
 import ServiceForm from '@/components/ServiceForm';
@@ -24,6 +24,7 @@ export default function ServiceDetailPage({ params }: ServiceDetailPageProps) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [isUpdating, setIsUpdating] = useState(false);
+  const [faviconUrl, setFaviconUrl] = useState<string | null>(null);
   
   useEffect(() => {
     const fetchService = async () => {
@@ -42,6 +43,29 @@ export default function ServiceDetailPage({ params }: ServiceDetailPageProps) {
     
     fetchService();
   }, [id]);
+  
+  useEffect(() => {
+    if (service && !service.icon) {
+      try {
+        const url = new URL(service.url);
+        const domain = url.hostname;
+        
+        const faviconUrl = `https://${domain}/favicon.ico`;
+        
+        const img = new Image();
+        img.onload = () => {
+          setFaviconUrl(faviconUrl);
+        };
+        img.onerror = () => {
+          const googleFaviconUrl = `https://www.google.com/s2/favicons?domain=${domain}`;
+          setFaviconUrl(googleFaviconUrl);
+        };
+        img.src = faviconUrl;
+      } catch (error) {
+        console.error('获取favicon失败:', error);
+      }
+    }
+  }, [service]);
   
   const handleEditService = async (serviceData: ServiceFormData) => {
     if (!service) return;
@@ -132,6 +156,51 @@ export default function ServiceDetailPage({ params }: ServiceDetailPageProps) {
     return date.toLocaleString('zh-CN');
   };
   
+  const iconMap = {
+    server: <FiServer size={24} className="text-blue-500" />,
+    database: <FiDatabase size={24} className="text-blue-500" />,
+    globe: <FiGlobe size={24} className="text-blue-500" />,
+    monitor: <FiMonitor size={24} className="text-blue-500" />,
+    cloud: <FiCloud size={24} className="text-blue-500" />,
+    mail: <FiMail size={24} className="text-blue-500" />,
+    file: <FiFileText size={24} className="text-blue-500" />,
+    calendar: <FiCalendar size={24} className="text-blue-500" />,
+    shield: <FiShield size={24} className="text-blue-500" />,
+    tool: <FiTool size={24} className="text-blue-500" />,
+  };
+  
+  const getServiceIcon = () => {
+    if (service.icon) {
+      if (service.icon.startsWith('http')) {
+        return (
+          <img 
+            src={service.icon} 
+            alt={`${service.name} 图标`} 
+            className="w-10 h-10 object-contain mr-3" 
+          />
+        );
+      } else {
+        return (
+          <div className="mr-3">
+            {iconMap[service.icon as keyof typeof iconMap] || <FiServer size={24} className="text-blue-500" />}
+          </div>
+        );
+      }
+    }
+    
+    if (faviconUrl) {
+      return (
+        <img 
+          src={faviconUrl} 
+          alt={`${service.name} 图标`} 
+          className="w-10 h-10 object-contain mr-3" 
+        />
+      );
+    }
+    
+    return <FiServer size={24} className="text-blue-500 mr-3" />;
+  };
+  
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 pb-16 sm:pb-0">
       <header className="bg-white dark:bg-gray-800 shadow">
@@ -143,7 +212,10 @@ export default function ServiceDetailPage({ params }: ServiceDetailPageProps) {
             >
               <FiArrowLeft size={20} />
             </Link>
-            <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{service.name}</h1>
+            <div className="flex items-center">
+              {getServiceIcon()}
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">{service.name}</h1>
+            </div>
           </div>
         </div>
       </header>
