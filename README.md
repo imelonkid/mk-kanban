@@ -2,7 +2,8 @@
 
 一个现代化的服务管理看板应用，用于监控和管理各种服务的状态和信息。
 
-![服务管理看板](https://via.placeholder.com/800x400?text=MK-Kanban+服务管理看板)
+![状态看板](images/demo1.png)
+![服务看板](images/demo2.png)
 
 ## 功能特点
 
