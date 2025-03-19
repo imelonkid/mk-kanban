@@ -2,8 +2,8 @@
 
 一个现代化的服务管理看板应用，用于监控和管理各种服务的状态和信息。
 
-![状态看板](images/demo1.png)
-![服务看板](images/demo2.png)
+![状态看板](public/images/demo1.png)
+![服务看板](public/images/demo2.png)
 
 ## 功能特点
 
